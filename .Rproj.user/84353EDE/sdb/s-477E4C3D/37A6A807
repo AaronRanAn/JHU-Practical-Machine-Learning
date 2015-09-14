@@ -1,12 +1,12 @@
 {
-    "contents" : "# quiz 3\n\n# Q1\n\nlibrary(AppliedPredictiveModeling)\ndata(segmentationOriginal)\nlibrary(caret)\n\ninTrain = createDataPartition(y=segmentationOriginal$Class,\n                              p=0.7,list = F)\n\ntraining = segmentationOriginal[inTrain, ]\ntesting = segmentationOriginal[-inTrain, ]\n\ndim(training); dim(testing)\n\nset.seed(125)\n\ntreefit <- train(Class ~ ., methods = \"rpart\", data = training)\nprint(treefit$finalModel)\n\n",
+    "contents" : "# quiz 3\n\n# Q1\n\nlibrary(AppliedPredictiveModeling)\ndata(segmentationOriginal)\nlibrary(caret)\n\ninTrain <- segmentationOriginal$Case == \"Train\"\n\ntraining = segmentationOriginal[inTrain, ]\ntesting = segmentationOriginal[-inTrain, ]\n\ndim(training); dim(testing)\n\nset.seed(125)\n\ntreefit <- train(Class ~ ., methods = \"rpart\", data = training)\nprint(treefit$finalModel)\n\n# Q2\n\nlibrary(pgmm)\ndata(olive)\nolive = olive[,-1]",
     "created" : 1442201568106.000,
     "dirty" : false,
     "encoding" : "UTF-8",
     "folds" : "",
-    "hash" : "1002907258",
+    "hash" : "970507360",
     "id" : "37A6A807",
-    "lastKnownWriteTime" : 1442208207,
+    "lastKnownWriteTime" : 1442208599,
     "path" : "~/MOOC/Practical Machine Learning/Assignment | Git/quiz3.R",
     "project_path" : "quiz3.R",
     "properties" : {

@@ -6,8 +6,7 @@ library(AppliedPredictiveModeling)
 data(segmentationOriginal)
 library(caret)
 
-inTrain = createDataPartition(y=segmentationOriginal$Class,
-                              p=0.7,list = F)
+inTrain <- segmentationOriginal$Case == "Train"
 
 training = segmentationOriginal[inTrain, ]
 testing = segmentationOriginal[-inTrain, ]
@@ -19,3 +18,8 @@ set.seed(125)
 treefit <- train(Class ~ ., methods = "rpart", data = training)
 print(treefit$finalModel)
 
+# Q2
+
+library(pgmm)
+data(olive)
+olive = olive[,-1]
