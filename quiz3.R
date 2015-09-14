@@ -15,8 +15,13 @@ dim(training); dim(testing)
 
 set.seed(125)
 
-treefit <- train(Class ~ ., methods = "rpart", data = training)
-print(treefit$finalModel)
+cartModel <- train(Class ~ ., data=training, method="rpart")
+cartModel$finalModel
+
+plot(treefit$finalModel, uniform = T, main = "Tree Classification")
+
+text(treefit$finalModel, use.n = T, all = T, cex = .8)
+
 
 # Q2
 

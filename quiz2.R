@@ -11,6 +11,8 @@ trainIndex = createDataPartition(diagnosis, p = 0.50,list=FALSE)
 training = adData[trainIndex,]
 testing = adData[-trainIndex,]
 
+
+
 # Q2
 
 library(AppliedPredictiveModeling)
