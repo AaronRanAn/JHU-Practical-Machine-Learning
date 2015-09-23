@@ -1,3 +1,6 @@
 # Course Project
 
-train <- read.csv()
+train <- read.csv("../Proj_Data/pml-training.csv")
+
+test <- read.csv("../Proj_Data/pml-testing.csv")
+
