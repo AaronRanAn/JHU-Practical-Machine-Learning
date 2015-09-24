@@ -5,3 +5,54 @@ date: "September 23, 2015"
 output: pdf_document
 ---
 
+This is the course project for JHU's Coursera Course, Practical Machine Learning. The data for this project come from this source: http://groupware.les.inf.puc-rio.br/har.
+
+## Question to Answer
+
+The purpose of this project is to predict the manner in which the people did the exercise, which is labeled as the "class" in the training set. The machine learning techinques include features selections, cross validation, fitting the model and validating the model using out of sample error. 
+
+## Data Prepration
+
+Reading data
+
+```{r}
+
+train <- read.csv("../Proj_Data/pml-training.csv")
+
+test <- read.csv("../Proj_Data/pml-testing.csv")
+
+
+```
+
+Inspect the dimension of the dataset and the class distribution of the target response.
+
+```{r}
+
+table(train$classe)
+
+dim(train)
+
+```
+
+There are many columns that either doesn't contribute much to our prediction (timestamps and window) or are populated with NA values which will heavily reduce our training sample size (assuming we are using alogrithms that only work with complete cases). So next step would be detect and remove them from our training set. 
+
+```{r}
+
+Null_Counter <- apply(train, 2, function(x) length(which(x == "" | is.na(x)))/length(x))
+
+Null_Name <- colnames(train)[Null_Counter >= 0.9] # drop the columns with more than 90% null. Nulls appear as "" or NA
+
+In_Check <- names(train) %in% Null_Name
+
+train <- train[, !In_Check]
+
+dim(train); dim(Null_Name) #Check the dimension of the different dataset to see if we dropped the right column
+
+train <- train[, c(-1:-6)]; dim(train) # Check the final training data set.
+
+```
+
+
+
+
+
