@@ -52,6 +52,47 @@ train <- train[, c(-1:-6)]; dim(train) # Check the final training data set.
 
 ```
 
+## Data Spliting 
+
+Standard step of spliting data into training (70%) and testing (30%) set.
+
+```{r}
+
+library(caret)
+
+set.seed(12345)
+inTrain <- createDataPartition(train$classe, p=0.70, list=F)
+trainData <- train[inTrain, ]
+testData <- train[-inTrain, ]
+
+```
+
+## Modeling
+
+### Random Forest
+
+Our fisrt try would be the random forest with 5 folds cross validation and 500 trees.  
+
+```{r}
+
+controlRf <- trainControl(method="cv", 5)
+
+fit_rf <- train(classe ~ ., data=trainData, method="rf", trControl=controlRf, ntree=250)
+
+fit_rf
+
+
+```
+
+Next we evaluate the model performance on the test (validation) set.
+
+```{r}
+
+rf_hat <- predict(fit_rf, testData)
+
+confusionMatrix(testData$classe, rf_hat)
+
+```
 
 
 
