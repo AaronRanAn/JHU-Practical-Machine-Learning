@@ -5,22 +5,31 @@ date: "September 23, 2015"
 output: pdf_document
 ---
 
-This is the course project for JHU's Coursera Course, Practical Machine Learning. The data for this project come from this source: http://groupware.les.inf.puc-rio.br/har.
+## Executive Summary
 
-## Question to Answer
+This is the course project for JHU's Coursera Course, Practical Machine Learning. The data for this project come from this source: [http://groupware.les.inf.puc-rio.br/har](http://groupware.les.inf.puc-rio.br/har).
 
-The purpose of this project is to predict the manner in which the people did the exercise, which is labeled as the "class" in the training set. The machine learning techinques include features selections, cross validation, fitting the model and validating the model using out of sample error. 
+## Learning Objective & Design
+
+The object of this project is to predict the manner in which the people do the exercise, which is labeled as the "classe" in the data set. The machine learning techinques and process include data preparation, features selections, cross validation, fitting models and validating the model using out of sample error and confusion matrix for classification. 
 
 ## Data Prepration
 
-Reading data
+First step is to read the training and test set into R. 
 
-```{r}
+```{r eval = F}
 
 train <- read.csv("../Proj_Data/pml-training.csv")
 
 test <- read.csv("../Proj_Data/pml-testing.csv")
 
+```
+
+```{r}
+
+# Load necessary pacakge
+
+library(caret)
 
 ```
 
@@ -34,31 +43,29 @@ dim(train)
 
 ```
 
-There are many columns that either doesn't contribute much to our prediction (timestamps and window) or are populated with NA values which will heavily reduce our training sample size (assuming we are using alogrithms that only work with complete cases). So next step would be detect and remove them from our training set. 
+After initial inspection, there are many columns that either doesn't contribute much to our prediction (eg. timestamps) or are populated with too many NA values which will heavily reduce our training sample size (most alogrithms we work with only apply on complete cases). So next step needs to detect and remove them from our training set. 
 
-```{r}
+```{r eval=F}
 
-Null_Counter <- apply(train, 2, function(x) length(which(x == "" | is.na(x)))/length(x))
+Null_Counter <- apply(train, 2, function(x) length(which(x == "" | is.na(x)))/length(x)) 
 
-Null_Name <- colnames(train)[Null_Counter >= 0.9] # drop the columns with more than 90% null. Nulls appear as "" or NA
+Null_Name <- colnames(train)[Null_Counter >= 0.9] # drop the columns with more than 90% null. Nulls appear as "" or NA. 
 
-In_Check <- names(train) %in% Null_Name
+In_Check <- names(train) %in% Null_Name; 
 
-train <- train[, !In_Check]
-
-dim(train); dim(Null_Name) #Check the dimension of the different dataset to see if we dropped the right column
+train <- train[, !In_Check]; test <- test[, !In_Check] # apply this selection on both training and test sets. 
 
 train <- train[, c(-1:-6)]; dim(train) # Check the final training data set.
 
+test <- test[, c(-1:-6)]; dim(test) # apply the same preparation process on test set. 
+
 ```
 
-## Data Spliting 
+## Data Partition 
 
-Standard step of spliting data into training (70%) and testing (30%) set.
+A standard step of spliting data into training (70%) and validation (30%) set (which is called testData here).
 
-```{r}
-
-library(caret)
+```{r eval=F}
 
 set.seed(12345)
 inTrain <- createDataPartition(train$classe, p=0.70, list=F)
@@ -67,12 +74,9 @@ testData <- train[-inTrain, ]
 
 ```
 
-## Modeling
+## Modeling with Random Forrest
 
-### Random Forest
-
-Our fisrt try would be the random forest with 5 folds cross validation and 500 trees.  
-
+Our machine learning approach is random forest with 5 folds cross validation and 500 trees.  
 ```{r}
 
 controlRf <- trainControl(method="cv", 5)
@@ -81,10 +85,9 @@ fit_rf <- train(classe ~ ., data=trainData, method="rf", trControl=controlRf, nt
 
 fit_rf
 
-
 ```
 
-Next we evaluate the model performance on the test (validation) set.
+Next we evaluate the model performance on the validation set.
 
 ```{r}
 
@@ -93,6 +96,20 @@ rf_hat <- predict(fit_rf, testData)
 confusionMatrix(testData$classe, rf_hat)
 
 ```
+
+As we can see the accuracy is very high. 
+
+## Generate the final submission on the test set.
+
+```{r}
+
+prediction <- predict(fit_rf, test)
+prediction
+
+```
+
+The model correctly classified 18 out of 20 data points in the test set. 
+
 
 
 
