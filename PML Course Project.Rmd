@@ -76,7 +76,7 @@ testData <- train[-inTrain, ]
 
 ## Modeling with Random Forrest
 
-Our machine learning approach is random forest with 5 folds cross validation and 500 trees.  
+My machine learning approach is random forest with 5 folds cross validation and 500 trees.  
 ```{r}
 
 controlRf <- trainControl(method="cv", 5)
@@ -85,9 +85,13 @@ fit_rf <- train(classe ~ ., data=trainData, method="rf", trControl=controlRf, nt
 
 fit_rf
 
+varImp(fit_rf)
+
 ```
 
-Next we evaluate the model performance on the validation set.
+Random forest performed well on the training set, in sample accuracy is about 99.68%. Also the variable importance table listed the most important 20 features in our data from scale of 0 - 100. This would give you a sense of which variables are more important than classify excercise. 
+
+Next we evaluate the model performance on the validation set and calculate out of sample error rate. 
 
 ```{r}
 
@@ -95,9 +99,13 @@ rf_hat <- predict(fit_rf, testData)
 
 confusionMatrix(testData$classe, rf_hat)
 
+accuracy <- postResample(rf_hat, testData$classe); accuracy
+
+error_rate <- 1 - as.numeric(accuracy[1])
+
 ```
 
-As we can see the accuracy is very high. 
+The test set accuracy is about 0.9962617, therefore the out of sample error rate is `r 1- as.numeric(accuracy[1])`. 
 
 ## Generate the final submission on the test set.
 
