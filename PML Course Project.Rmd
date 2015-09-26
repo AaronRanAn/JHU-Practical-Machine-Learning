@@ -2,7 +2,7 @@
 title: "PML Course Project"
 author: "Aaron Ran An"
 date: "September 23, 2015"
-output: pdf_document
+output: html_document
 ---
 
 ## Executive Summary
@@ -17,7 +17,7 @@ The object of this project is to predict the manner in which the people do the e
 
 First step is to read the training and test set into R. 
 
-```{r eval = F}
+```{r}
 
 train <- read.csv("../Proj_Data/pml-training.csv")
 
@@ -45,7 +45,7 @@ dim(train)
 
 After initial inspection, there are many columns that either doesn't contribute much to our prediction (eg. timestamps) or are populated with too many NA values which will heavily reduce our training sample size (most alogrithms we work with only apply on complete cases). So next step needs to detect and remove them from our training set. 
 
-```{r eval=F}
+```{r}
 
 Null_Counter <- apply(train, 2, function(x) length(which(x == "" | is.na(x)))/length(x)) 
 
@@ -65,7 +65,7 @@ test <- test[, c(-1:-6)]; dim(test) # apply the same preparation process on test
 
 A standard step of spliting data into training (70%) and validation (30%) set (which is called testData here).
 
-```{r eval=F}
+```{r}
 
 set.seed(12345)
 inTrain <- createDataPartition(train$classe, p=0.70, list=F)
