@@ -109,11 +109,47 @@ plot.enet(lasso_fit$finalModel, xvar="penalty", use.color=T) # Cement
 
 # Question 4 Time Series
 
-library(lubridate)  # For year() function below
-dat = read.csv("~/Desktop/gaData.csv")
+library(lubridate)
+library(forecast)
+
+dat = read.csv("gaData.csv")
+
 training = dat[year(dat$date) < 2012,]
 testing = dat[(year(dat$date)) > 2011,]
 tstrain = ts(training$visitsTumblr)
 
+ts_fit <- bats(tstrain)
 
+ts_fit
 
+pred <- forecast(ts_fit, level=95, h=dim(testing)[1])
+
+names(data.frame(pred))
+
+predComb <- cbind(testing, data.frame(pred))
+
+names(testing)
+names(predComb)
+predComb$in95 <- (predComb$Lo.95 < predComb$visitsTumblr) & 
+        (predComb$visitsTumblr < predComb$Hi.95)
+
+prop.table(table(predComb$in95))[2]
+
+#Question 5
+
+set.seed(3523)
+library(AppliedPredictiveModeling)
+library(e1071)
+data(concrete)
+inTrain = createDataPartition(concrete$CompressiveStrength, p = 3/4)[[1]]
+training = concrete[ inTrain,]
+testing = concrete[-inTrain,]
+
+set.seed(325)
+
+svm_fit <- svm(CompressiveStrength ~., data=training)
+
+svm_fit
+
+svm_hat <- predict(svm_fit, testing)
+accuracy(svm_hat, testing$CompressiveStrength)[2]
